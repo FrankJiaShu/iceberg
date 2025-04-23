@@ -138,6 +138,13 @@ public class RESTCatalogServer {
    * 执行入口
    */
   public static void main(String[] args) throws Exception {
+    // 显式加载 MySQL JDBC 驱动类
+    try {
+      Class.forName("com.mysql.cj.jdbc.Driver");
+      LOG.info("MySQL JDBC Driver loaded successfully.");
+    } catch (ClassNotFoundException e) {
+      LOG.error("Failed to load MySQL JDBC Driver", e);
+    }
     new RESTCatalogServer().start(true);
   }
 }
