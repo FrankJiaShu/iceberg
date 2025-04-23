@@ -41,6 +41,7 @@ include 'dell'
 include 'snowflake'
 include 'delta-lake'
 include 'open-api'
+include 'open-api-server'
 include 'mr'
 
 project(':bom').name = 'iceberg-bom'
@@ -66,6 +67,7 @@ project(':dell').name = 'iceberg-dell'
 project(':snowflake').name = 'iceberg-snowflake'
 project(':delta-lake').name = 'iceberg-delta-lake'
 project(':open-api').name = 'iceberg-open-api'
+project(':open-api-server').name = 'iceberg-open-api-server'
 project(':mr').name = 'iceberg-mr'
 
 if (null != System.getProperty("allModules")) {

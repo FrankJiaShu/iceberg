@@ -18,6 +18,8 @@
  */
 
 import groovy.transform.Memoized
+import org.openapitools.generator.gradle.plugin.tasks.ValidateTask
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -1047,6 +1049,94 @@ project(':iceberg-open-api') {
     }
   }
 
+  jar {
+    enabled = false
+  }
+}
+
+project(':iceberg-open-api-server') {
+  apply plugin: 'com.gradleup.shadow'
+
+  build.dependsOn shadowJar
+
+  dependencies {
+    implementation project(':iceberg-api')
+    implementation project(':iceberg-core')
+    implementation project(':iceberg-core').sourceSets.test.runtimeClasspath
+    implementation(testFixtures(project(':iceberg-open-api')))
+
+    implementation libs.mysql.connector
+    implementation libs.junit.jupiter
+    implementation libs.junit.suite.api
+    implementation libs.junit.suite.engine
+    implementation libs.assertj.core
+
+    implementation project(':iceberg-aws-bundle')
+    implementation project(':iceberg-gcp-bundle')
+    implementation project(':iceberg-azure-bundle')
+
+//    implementation project(path: ':iceberg-core', configuration: 'testArtifacts')
+    implementation project(':iceberg-aws')
+    implementation project(':iceberg-gcp')
+    implementation project(':iceberg-azure')
+    implementation(libs.hadoop3.common) {
+      exclude group: 'org.slf4j'
+      exclude group: 'ch.qos.reload4j'
+      exclude group: 'org.apache.avro', module: 'avro'
+      exclude group: 'com.google.guava'
+      exclude group: 'com.google.protobuf'
+      exclude group: 'org.apache.curator'
+      exclude group: 'org.apache.zookeeper'
+      exclude group: 'org.apache.kerby'
+      exclude group: 'org.apache.hadoop.thirdparty', module: 'hadoop-shaded-protobuf_3_7'
+      exclude group: 'org.eclipse.jetty'
+      exclude group: 'com.google.re2j', module: 're2j'
+      exclude group: 'com.google.code.gson', module: 'gson'
+      exclude group: 'com.jcraft', module: 'jsch'
+      exclude group: 'com.google.code.findbugs', module: 'jsr305'
+      exclude group: 'io.dropwizard.metrics', module: 'metrics-core'
+      exclude group: 'dnsjava', module: 'dnsjava'
+      exclude group: 'org.xerial.snappy', module: 'snappy-java'
+      exclude group: 'commons-cli', module: 'commons-cli'
+      exclude group: 'com.github.pjfanning', module: 'jersey-json'
+    }
+    implementation project(path: ':iceberg-bundled-guava', configuration: 'shadow')
+//    implementation libs.junit.jupiter
+
+    implementation libs.slf4j.api
+    implementation libs.slf4j.simple
+
+    implementation libs.jetty.servlet
+    implementation libs.jetty.server
+//    implementation libs.sqlite.jdbc
+
+    compileOnly libs.apiguardian
+
+    runtimeOnly project(':iceberg-aws-bundle')
+    runtimeOnly project(':iceberg-azure-bundle')
+    runtimeOnly project(':iceberg-gcp-bundle')
+  }
+
+  // 只生成阴影JAR文件
+  shadowJar {
+    archiveBaseName.set("iceberg-open-api-server")
+    archiveClassifier.set(null)
+    configurations = [project.configurations.runtimeClasspath]
+    from sourceSets.main.output
+    zip64 true
+
+    // 包含LICENSE和NOTICE文件
+    from(projectDir) {
+      include 'LICENSE'
+      include 'NOTICE'
+    }
+
+    manifest {
+      attributes 'Main-Class': 'org.apache.iceberg.rest.RESTCatalogServer'
+    }
+  }
+
+  // 禁用普通JAR任务
   jar {
     enabled = false
   }

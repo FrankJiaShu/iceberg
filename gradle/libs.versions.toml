@@ -83,6 +83,7 @@ spark34 = "3.4.4"
 spark35 = "3.5.5"
 sqlite-jdbc = "3.49.1.0"
 testcontainers = "1.20.6"
+mysql-connector = "8.0.33"
 tez08 = { strictly = "0.8.4"}  # see rich version usage explanation above
 
 [libraries]
@@ -210,6 +211,7 @@ nessie-versioned-storage-testextension = { module = "org.projectnessie.nessie:ne
 orc-tools = { module = "org.apache.orc:orc-tools", version.ref = "orc" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+mysql-connector = { module = "mysql:mysql-connector-java", version.ref = "mysql-connector" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
 testcontainers-minio = { module = "org.testcontainers:minio", version.ref = "testcontainers" }
 tez08-dag = { module = "org.apache.tez:tez-dag", version.ref = "tez08" }
